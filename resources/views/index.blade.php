@@ -159,11 +159,21 @@
             </div>
         </div>
 
-        <!-- Log Level Overview Stats Cards -->
+        <!-- Log Level Overview Stats Cards (Multi-Selectable) -->
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-3">
             <template x-for="lvl in levelStatsList" :key="lvl.name">
-                <button @click="setLevelFilter(lvl.name)" :class="selectedLevel.toLowerCase() === lvl.name.toLowerCase() ? 'ring-2 ring-indigo-500 shadow-md' : 'opacity-85 hover:opacity-100'" class="flex flex-col p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left transition-all cursor-pointer">
-                    <span class="text-[10px] font-bold uppercase tracking-wider" :class="lvl.textColor" x-text="lvl.name"></span>
+                <button @click="toggleLevelFilter(lvl.name)" 
+                        :class="isLevelSelected(lvl.name) ? 'ring-2 ring-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/40 shadow-md' : 'opacity-75 hover:opacity-100'" 
+                        class="relative flex flex-col p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left transition-all cursor-pointer"
+                        :title="'Click to toggle ' + lvl.name + ' logs filter'">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold uppercase tracking-wider" :class="lvl.textColor" x-text="lvl.name"></span>
+                        <template x-if="isLevelSelected(lvl.name)">
+                            <svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </template>
+                    </div>
                     <span class="text-lg font-black text-slate-900 dark:text-white mt-0.5" x-text="stats[lvl.name] || 0"></span>
                 </button>
             </template>
@@ -185,6 +195,20 @@
                     </svg>
                 </button>
             </div>
+
+            <!-- Active Multi-Level Badges -->
+            <template x-if="!selectedLevels.includes('ALL') && selectedLevels.length > 0">
+                <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                    <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Selected:</span>
+                    <template x-for="lvl in selectedLevels" :key="lvl">
+                        <span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                            <span x-text="lvl"></span>
+                            <button @click="toggleLevelFilter(lvl)" class="hover:text-red-500 ml-0.5">&times;</button>
+                        </span>
+                    </template>
+                    <button @click="toggleLevelFilter('ALL')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline ml-1">Reset</button>
+                </div>
+            </template>
 
             <!-- Log Count summary -->
             <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1">
@@ -324,7 +348,7 @@
                 totalEntries: {{ $total ?? 0 }},
                 currentPage: {{ $current_page ?? 1 }},
                 lastPage: {{ $last_page ?? 1 }},
-                selectedLevel: '{{ $current_level ?? "all" }}',
+                selectedLevels: @json($current_levels ?? ['ALL']),
                 searchQuery: '{{ $search_query ?? "" }}',
                 loading: false,
                 copiedId: null,
@@ -332,6 +356,32 @@
                 pollingInterval: 0,
                 pollingTimer: null,
                 routePrefix: '{{ $route_prefix ?? "log-viewer" }}',
+
+                isLevelSelected(levelName) {
+                    const lvlUpper = (levelName || '').toUpperCase();
+                    if (lvlUpper === 'ALL') {
+                        return this.selectedLevels.length === 0 || this.selectedLevels.includes('ALL');
+                    }
+                    return this.selectedLevels.includes(lvlUpper);
+                },
+
+                toggleLevelFilter(levelName) {
+                    const lvlUpper = (levelName || '').toUpperCase();
+                    if (lvlUpper === 'ALL') {
+                        this.selectedLevels = ['ALL'];
+                    } else {
+                        this.selectedLevels = this.selectedLevels.filter(l => l !== 'ALL');
+                        if (this.selectedLevels.includes(lvlUpper)) {
+                            this.selectedLevels = this.selectedLevels.filter(l => l !== lvlUpper);
+                        } else {
+                            this.selectedLevels.push(lvlUpper);
+                        }
+                        if (this.selectedLevels.length === 0) {
+                            this.selectedLevels = ['ALL'];
+                        }
+                    }
+                    this.fetchLogs(1);
+                },
 
                 copyLog(entry) {
                     let text = `[${entry.timestamp}] ${entry.env}.${entry.level}: ${entry.message}`;
@@ -394,11 +444,6 @@
                     localStorage.setItem('log_viewer_theme', this.theme);
                 },
 
-                setLevelFilter(level) {
-                    this.selectedLevel = level;
-                    this.fetchLogs(1);
-                },
-
                 toggleDetails(id) {
                     if (this.expandedEntries.includes(id)) {
                         this.expandedEntries = this.expandedEntries.filter(e => e !== id);
@@ -442,9 +487,10 @@
                     this.currentPage = page;
 
                     try {
+                        const activeLevelsStr = this.selectedLevels.includes('ALL') ? 'all' : this.selectedLevels.join(',');
                         const params = new URLSearchParams({
                             file: this.selectedFile,
-                            level: this.selectedLevel,
+                            levels: activeLevelsStr,
                             q: this.searchQuery,
                             page: this.currentPage
                         });

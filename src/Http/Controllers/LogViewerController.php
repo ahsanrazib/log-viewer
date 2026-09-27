@@ -25,18 +25,23 @@ class LogViewerController extends Controller
         }
 
         $file = $request->input('file');
-        $level = $request->input('level', 'all');
+        $levelsInput = $request->input('levels') ?? $request->input('level', 'all');
         $query = $request->input('q');
         $page = (int) $request->input('page', 1);
 
         $data = $this->service->getLogs(
             fileName: $file,
-            level: $level,
+            level: $levelsInput,
             query: $query,
             page: $page
         );
 
-        $data['current_level'] = $level;
+        $levelsArray = is_array($levelsInput)
+            ? $levelsInput
+            : (is_string($levelsInput) && trim($levelsInput) !== '' ? explode(',', $levelsInput) : ['all']);
+
+        $data['current_level'] = is_array($levelsInput) ? implode(',', $levelsInput) : $levelsInput;
+        $data['current_levels'] = array_map('strtoupper', array_map('trim', $levelsArray));
         $data['search_query'] = $query;
         $data['theme'] = Config::get('log-viewer.theme', 'auto');
         $data['route_prefix'] = Config::get('log-viewer.route_prefix', 'log-viewer');
@@ -94,13 +99,13 @@ class LogViewerController extends Controller
         }
 
         $file = $request->input('file');
-        $level = $request->input('level', 'all');
+        $levelsInput = $request->input('levels') ?? $request->input('level', 'all');
         $query = $request->input('q');
         $page = (int) $request->input('page', 1);
 
         $data = $this->service->getLogs(
             fileName: $file,
-            level: $level,
+            level: $levelsInput,
             query: $query,
             page: $page
         );

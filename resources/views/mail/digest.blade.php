@@ -71,7 +71,7 @@
             </table>
         </div>
         <div class="footer">
-            Sent automatically by SolverCircle Laravel Log Viewer.
+            Sent automatically by <a href="https://www.solvercircle.com">SolverCircle</a> Laravel Log Viewer.
         </div>
     </div>
 </body>

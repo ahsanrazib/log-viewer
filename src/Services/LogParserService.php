@@ -47,10 +47,12 @@ class LogParserService
 
     /**
      * Parse log file into structured LogEntry DTOs with filtering, search, and pagination.
+     *
+     * @param  array<int, string>|string|null  $levelFilter
      */
     public function parseFile(
         string $filePath,
-        ?string $levelFilter = null,
+        array|string|null $levelFilter = null,
         ?string $searchQuery = null,
         int $page = 1,
         int $perPage = 50
@@ -65,6 +67,13 @@ class LogParserService
                 'stats' => $this->getEmptyStats(),
             ];
         }
+
+        // Normalize level filter into array of uppercase strings
+        $levels = is_array($levelFilter)
+            ? $levelFilter
+            : (is_string($levelFilter) && trim($levelFilter) !== '' ? explode(',', $levelFilter) : []);
+
+        $upperFilterLevels = array_map('strtoupper', array_map('trim', array_filter($levels)));
 
         $content = File::get($filePath);
         $rawBlocks = $this->splitLogBlocks($content);
@@ -87,8 +96,8 @@ class LogParserService
             }
             $stats['ALL']++;
 
-            // Apply Level Filter
-            if ($levelFilter && strtolower($levelFilter) !== 'all' && strtolower($entry->level) !== strtolower($levelFilter)) {
+            // Apply Multi-Level Filter
+            if (! empty($upperFilterLevels) && ! in_array('ALL', $upperFilterLevels, true) && ! in_array($upperLevel, $upperFilterLevels, true)) {
                 continue;
             }
 

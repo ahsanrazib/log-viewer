@@ -85,6 +85,28 @@ LOG;
     }
 });
 
+test('it filters log entries by multiple selected log levels', function () {
+    $dummyLog = <<<'LOG'
+[2026-09-27 10:15:00] local.ERROR: First error entry
+[2026-09-27 10:16:00] local.INFO: Information log message
+[2026-09-27 10:17:00] local.DEBUG: Debugging message entry
+[2026-09-27 10:18:00] local.WARNING: Warning alert entry
+LOG;
+
+    File::put($this->sampleLogPath, $dummyLog);
+
+    /** @var LogParserService $parser */
+    $parser = app(LogParserService::class);
+    $multiResult = $parser->parseFile($this->sampleLogPath, levelFilter: ['ERROR', 'DEBUG']);
+
+    expect($multiResult['total'])->toBe(2);
+    $levelsFound = array_column($multiResult['entries'], 'level');
+    expect($levelsFound)->toContain('ERROR');
+    expect($levelsFound)->toContain('DEBUG');
+    expect($levelsFound)->not->toContain('INFO');
+    expect($levelsFound)->not->toContain('WARNING');
+});
+
 test('it searches log entries by query string', function () {
     $dummyLog = <<<'LOG'
 [2026-09-27 10:15:00] local.ERROR: Payment gateway timeout {"gateway":"Stripe"}

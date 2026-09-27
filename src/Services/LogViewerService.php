@@ -33,7 +33,7 @@ class LogViewerService
      */
     public function getLogs(
         ?string $fileName = null,
-        ?string $level = null,
+        array|string|null $level = null,
         ?string $query = null,
         int $page = 1,
         ?int $perPage = null
