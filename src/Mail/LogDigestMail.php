@@ -15,10 +15,8 @@ class LogDigestMail extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param array<int, array> $entries
-     * @param int $intervalMinutes
-     * @param string $environment
-     * @param array<int, string> $levels
+     * @param  array<int, array>  $entries
+     * @param  array<int, string>  $levels
      */
     public function __construct(
         public array $entries,

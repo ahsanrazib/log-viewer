@@ -68,7 +68,6 @@ return [
     | - Email Address: null (LOG_VIEWER_EMAIL_TO)
     | - Time Interval: 30 minutes (LOG_VIEWER_EMAIL_INTERVAL)
     | - Log Types: ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY'] (LOG_VIEWER_EMAIL_LEVELS)
-    | Note: Email notifications only run when app environment is 'production'.
     |
     */
     'email_notifications' => [

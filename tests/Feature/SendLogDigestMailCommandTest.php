@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use SolverCircle\LogViewer\Mail\LogDigestMail;
@@ -23,26 +22,13 @@ afterEach(function () {
     }
 });
 
-test('it skips email digest when app environment is not production and --force is not set', function () {
-    config([
-        'log-viewer.email_notifications.enabled' => true,
-        'log-viewer.email_notifications.to' => 'admin@example.com',
-    ]);
-
-    $this->artisan('log-viewer:send-email-digest')
-        ->expectsOutputToContain("only in 'production' environment")
-        ->assertSuccessful();
-
-    Mail::assertNothingSent();
-});
-
 test('it skips email digest when email_notifications.enabled is false', function () {
     config([
         'log-viewer.email_notifications.enabled' => false,
         'log-viewer.email_notifications.to' => 'admin@example.com',
     ]);
 
-    $this->artisan('log-viewer:send-email-digest', ['--force' => true])
+    $this->artisan('log-viewer:send-email-digest')
         ->expectsOutputToContain('email notifications are disabled in config')
         ->assertSuccessful();
 
@@ -55,14 +41,14 @@ test('it warns when no recipient email address is configured', function () {
         'log-viewer.email_notifications.to' => null,
     ]);
 
-    $this->artisan('log-viewer:send-email-digest', ['--force' => true])
+    $this->artisan('log-viewer:send-email-digest')
         ->expectsOutputToContain('No recipient email address configured')
         ->assertExitCode(1);
 
     Mail::assertNothingSent();
 });
 
-test('it sends email digest when matching logs exist in timeframe', function () {
+test('it sends email digest when matching logs exist in timeframe in any APP_ENV', function () {
     config([
         'log-viewer.email_notifications.enabled' => true,
         'log-viewer.email_notifications.to' => 'admin@example.com',
@@ -71,9 +57,9 @@ test('it sends email digest when matching logs exist in timeframe', function () 
     ]);
 
     $now = date('Y-m-d H:i:s');
-    File::put($this->sampleLogPath, "[{$now}] production.ERROR: Database query failed {}\n");
+    File::put($this->sampleLogPath, "[{$now}] local.ERROR: Database query failed {}\n");
 
-    $this->artisan('log-viewer:send-email-digest', ['--force' => true])
+    $this->artisan('log-viewer:send-email-digest')
         ->expectsOutputToContain("Successfully sent log digest email to 'admin@example.com'")
         ->assertSuccessful();
 
@@ -94,9 +80,9 @@ test('it does not send email digest when no logs match the timeframe', function 
 
     // Old log from 2 hours ago
     $oldTime = date('Y-m-d H:i:s', time() - 7200);
-    File::put($this->sampleLogPath, "[{$oldTime}] production.ERROR: Old database error {}\n");
+    File::put($this->sampleLogPath, "[{$oldTime}] local.ERROR: Old database error {}\n");
 
-    $this->artisan('log-viewer:send-email-digest', ['--force' => true])
+    $this->artisan('log-viewer:send-email-digest')
         ->expectsOutputToContain('No matching log entries found in the last 30 minutes')
         ->assertSuccessful();
 

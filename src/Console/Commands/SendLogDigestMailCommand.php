@@ -17,28 +17,21 @@ class SendLogDigestMailCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'log-viewer:send-email-digest {--force : Force execution even outside production environment}';
+    protected $signature = 'log-viewer:send-email-digest';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send an email digest of logs that occurred in the configured time interval (only in production)';
+    protected $description = 'Send an email digest of logs that occurred in the configured time interval';
 
     /**
      * Execute the console command.
      */
     public function handle(LogViewerService $service, LogParserService $parser): int
     {
-        // 1. Environment constraint check: Production only unless --force is specified
-        if (! App::environment('production') && ! $this->option('force')) {
-            $this->info("Log Viewer email notifications are configured to run only in 'production' environment (current: '".App::environment()."'). Use --force to override.");
-
-            return self::SUCCESS;
-        }
-
-        // 2. Check enabled configuration
+        // 1. Check enabled configuration
         $enabled = (bool) Config::get('log-viewer.email_notifications.enabled', false);
         if (! $enabled) {
             $this->info('Log Viewer email notifications are disabled in config (email_notifications.enabled = false).');
@@ -46,7 +39,7 @@ class SendLogDigestMailCommand extends Command
             return self::SUCCESS;
         }
 
-        // 3. Check recipient email
+        // 2. Check recipient email
         $recipient = Config::get('log-viewer.email_notifications.to');
         if (empty($recipient)) {
             $this->warn('No recipient email address configured for Log Viewer notifications (email_notifications.to is empty).');
@@ -54,11 +47,11 @@ class SendLogDigestMailCommand extends Command
             return self::FAILURE;
         }
 
-        // 4. Read interval and log levels
+        // 3. Read interval and log levels
         $intervalMinutes = (int) Config::get('log-viewer.email_notifications.interval_minutes', 30);
         $levels = (array) Config::get('log-viewer.email_notifications.levels', ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY']);
 
-        // 5. Gather log files and collect matching entries
+        // 4. Gather log files and collect matching entries
         $files = $service->getFiles();
         if (empty($files)) {
             $this->info('No log files available to parse.');
@@ -78,7 +71,7 @@ class SendLogDigestMailCommand extends Command
             return self::SUCCESS;
         }
 
-        // 6. Send Mail
+        // 5. Send Mail
         $environment = App::environment();
         Mail::to($recipient)->send(new LogDigestMail(
             entries: $allMatchingEntries,

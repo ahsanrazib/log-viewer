@@ -130,9 +130,7 @@ class LogParserService
     /**
      * Get log entries created within the last X minutes matching specified log levels.
      *
-     * @param string $filePath
-     * @param int $minutes
-     * @param array<int, string> $levels
+     * @param  array<int, string>  $levels
      * @return array<int, array>
      */
     public function getLogsInTimeframe(string $filePath, int $minutes = 30, array $levels = ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY']): array
