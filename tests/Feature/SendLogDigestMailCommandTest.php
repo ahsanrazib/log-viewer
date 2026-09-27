@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use SolverCircle\LogViewer\Mail\LogDigestMail;
-use SolverCircle\LogViewer\Tests\TestCase;
+use Ahsanrazib\LogViewer\Mail\LogDigestMail;
+use Ahsanrazib\LogViewer\Tests\TestCase;
 
 uses(TestCase::class);
 

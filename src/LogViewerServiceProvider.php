@@ -1,11 +1,11 @@
 <?php
 
-namespace SolverCircle\LogViewer;
+namespace Ahsanrazib\LogViewer;
 
 use Illuminate\Support\ServiceProvider;
-use SolverCircle\LogViewer\Console\Commands\SendLogDigestMailCommand;
-use SolverCircle\LogViewer\Services\LogParserService;
-use SolverCircle\LogViewer\Services\LogViewerService;
+use Ahsanrazib\LogViewer\Console\Commands\SendLogDigestMailCommand;
+use Ahsanrazib\LogViewer\Services\LogParserService;
+use Ahsanrazib\LogViewer\Services\LogViewerService;
 
 class LogViewerServiceProvider extends ServiceProvider
 {

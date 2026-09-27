@@ -1,9 +1,9 @@
 <?php
 
-namespace SolverCircle\LogViewer\Services;
+namespace Ahsanrazib\LogViewer\Services;
 
 use Illuminate\Support\Facades\File;
-use SolverCircle\LogViewer\Support\LogEntry;
+use Ahsanrazib\LogViewer\Support\LogEntry;
 
 class LogParserService
 {

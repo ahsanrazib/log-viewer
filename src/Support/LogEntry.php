@@ -1,6 +1,6 @@
 <?php
 
-namespace SolverCircle\LogViewer\Support;
+namespace Ahsanrazib\LogViewer\Support;
 
 class LogEntry
 {

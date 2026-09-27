@@ -1,14 +1,14 @@
 <?php
 
-namespace SolverCircle\LogViewer\Console\Commands;
+namespace Ahsanrazib\LogViewer\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
-use SolverCircle\LogViewer\Mail\LogDigestMail;
-use SolverCircle\LogViewer\Services\LogParserService;
-use SolverCircle\LogViewer\Services\LogViewerService;
+use Ahsanrazib\LogViewer\Mail\LogDigestMail;
+use Ahsanrazib\LogViewer\Services\LogParserService;
+use Ahsanrazib\LogViewer\Services\LogViewerService;
 
 class SendLogDigestMailCommand extends Command
 {

@@ -2,9 +2,9 @@
 
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\File;
-use SolverCircle\LogViewer\Services\LogParserService;
-use SolverCircle\LogViewer\Services\LogViewerService;
-use SolverCircle\LogViewer\Tests\TestCase;
+use Ahsanrazib\LogViewer\Services\LogParserService;
+use Ahsanrazib\LogViewer\Services\LogViewerService;
+use Ahsanrazib\LogViewer\Tests\TestCase;
 
 uses(TestCase::class);
 

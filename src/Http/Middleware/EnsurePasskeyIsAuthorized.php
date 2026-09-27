@@ -1,6 +1,6 @@
 <?php
 
-namespace SolverCircle\LogViewer\Http\Middleware;
+namespace Ahsanrazib\LogViewer\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

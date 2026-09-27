@@ -1,8 +1,8 @@
 <?php
 
-namespace SolverCircle\LogViewer\Tests;
+namespace Ahsanrazib\LogViewer\Tests;
 
-use SolverCircle\LogViewer\LogViewerServiceProvider;
+use Ahsanrazib\LogViewer\LogViewerServiceProvider;
 
 if (class_exists(\Orchestra\Testbench\TestCase::class)) {
     abstract class BaseTestCase extends \Orchestra\Testbench\TestCase

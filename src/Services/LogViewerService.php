@@ -1,6 +1,6 @@
 <?php
 
-namespace SolverCircle\LogViewer\Services;
+namespace Ahsanrazib\LogViewer\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;

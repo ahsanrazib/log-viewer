@@ -1,12 +1,12 @@
 <?php
 
-namespace SolverCircle\LogViewer\Http\Controllers;
+namespace Ahsanrazib\LogViewer\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
-use SolverCircle\LogViewer\Services\LogViewerService;
+use Ahsanrazib\LogViewer\Services\LogViewerService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LogViewerController extends Controller

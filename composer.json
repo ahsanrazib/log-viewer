@@ -31,21 +31,21 @@
     },
     "autoload": {
         "psr-4": {
-            "SolverCircle\\LogViewer\\": "src/"
+            "Ahsanrazib\\LogViewer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SolverCircle\\LogViewer\\Tests\\": "tests/"
+            "Ahsanrazib\\LogViewer\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "SolverCircle\\LogViewer\\LogViewerServiceProvider"
+                "Ahsanrazib\\LogViewer\\LogViewerServiceProvider"
             ],
             "aliases": {
-                "LogViewer": "SolverCircle\\LogViewer\\Facades\\LogViewer"
+                "LogViewer": "Ahsanrazib\\LogViewer\\Facades\\LogViewer"
             }
         }
     },

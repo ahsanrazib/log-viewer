@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
-use SolverCircle\LogViewer\Http\Controllers\LogViewerController;
-use SolverCircle\LogViewer\Http\Middleware\EnsurePasskeyIsAuthorized;
+use Ahsanrazib\LogViewer\Http\Controllers\LogViewerController;
+use Ahsanrazib\LogViewer\Http\Middleware\EnsurePasskeyIsAuthorized;
 
 $prefix = Config::get('log-viewer.route_prefix', 'log-viewer');
 $domain = Config::get('log-viewer.route_domain');

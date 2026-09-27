@@ -1,4 +1,4 @@
-# SolverCircle Log Viewer
+# Ahsanrazib Log Viewer
 
 A modern, interactive, real-time log viewer for Laravel applications. Easily inspect, filter, search, download, and manage Monolog log files directly from your application's browser UI.
 
@@ -32,7 +32,7 @@ composer require solvercircle/log-viewer
 Publish the package configuration file and views (optional):
 
 ```bash
-php artisan vendor:publish --provider="SolverCircle\LogViewer\LogViewerServiceProvider"
+php artisan vendor:publish --provider="Ahsanrazib\LogViewer\LogViewerServiceProvider"
 ```
 
 ---

@@ -1,9 +1,9 @@
 <?php
 
-namespace SolverCircle\LogViewer\Facades;
+namespace Ahsanrazib\LogViewer\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use SolverCircle\LogViewer\Services\LogViewerService;
+use Ahsanrazib\LogViewer\Services\LogViewerService;
 
 /**
  * @method static array getFiles()

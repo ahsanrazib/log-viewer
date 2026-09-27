@@ -1,6 +1,6 @@
 <?php
 
-namespace SolverCircle\LogViewer\Mail;
+namespace Ahsanrazib\LogViewer\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
