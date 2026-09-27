@@ -3,6 +3,7 @@
 namespace SolverCircle\LogViewer;
 
 use Illuminate\Support\ServiceProvider;
+use SolverCircle\LogViewer\Console\Commands\SendLogDigestMailCommand;
 use SolverCircle\LogViewer\Services\LogParserService;
 use SolverCircle\LogViewer\Services\LogViewerService;
 
@@ -37,6 +38,10 @@ class LogViewerServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'log-viewer');
 
         if ($this->app->runningInConsole()) {
+            $this->commands([
+                SendLogDigestMailCommand::class,
+            ]);
+
             $this->publishes([
                 __DIR__.'/../config/log-viewer.php' => config_path('log-viewer.php'),
             ], 'log-viewer-config');

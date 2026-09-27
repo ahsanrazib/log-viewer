@@ -59,6 +59,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Email Notifications Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Periodic email digest alerts for recent logs.
+    | Defaults:
+    | - Enabled: false
+    | - Email Address: null (LOG_VIEWER_EMAIL_TO)
+    | - Time Interval: 30 minutes (LOG_VIEWER_EMAIL_INTERVAL)
+    | - Log Types: ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY'] (LOG_VIEWER_EMAIL_LEVELS)
+    | Note: Email notifications only run when app environment is 'production'.
+    |
+    */
+    'email_notifications' => [
+        'enabled' => (bool) env('LOG_VIEWER_EMAIL_ENABLED', false),
+        'to' => env('LOG_VIEWER_EMAIL_TO', null),
+        'interval_minutes' => (int) env('LOG_VIEWER_EMAIL_INTERVAL', 30),
+        'levels' => array_map('trim', explode(',', env('LOG_VIEWER_EMAIL_LEVELS', 'ERROR,CRITICAL,ALERT,EMERGENCY'))),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Log Parsing Configuration
     |--------------------------------------------------------------------------
     |

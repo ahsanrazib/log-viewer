@@ -11,12 +11,13 @@ A modern, interactive, real-time log viewer for Laravel applications. Easily ins
 - 🏷️ **Level Filter & Statistics**: Live overview counts and filtering for `EMERGENCY`, `ALERT`, `CRITICAL`, `ERROR`, `WARNING`, `NOTICE`, `INFO`, and `DEBUG` entries.
 - 🔍 **Real-time Search**: Search log entry messages, formatted context data, or stack traces instantly.
 - ⚡ **Live Polling / Auto-refresh**: Configurable real-time polling (3s, 5s, 10s intervals) for live log monitoring.
-- 🔍 **Expandable Stack Traces & Context**: Formatted JSON context inspector and stack trace reader.
+- 📬 **Email Digest Notifications**: Periodic email alerts of error logs in production (e.g. logs from the last 30 minutes).
+- 🔑 **Passkey Protection**: Restrict log viewer access with a configurable secret passkey.
 - ⚡ **Management Actions**:
+  - Copy log entry to clipboard with 1-click button.
   - Download raw `.log` file.
   - Clear log file content.
   - Delete log file.
-- 🔒 **Security & Customization**: Configurable route prefix, route domain, custom authorization middleware (e.g. `auth`, `can:viewLogs`), and security checks against path traversal.
 
 ---
 
@@ -36,57 +37,55 @@ php artisan vendor:publish --provider="SolverCircle\LogViewer\LogViewerServicePr
 
 ---
 
-## Usage
-
-Access the Log Viewer in your browser at:
-
-```
-http://your-app.test/log-viewer
-```
-
-### Configuration (`config/log-viewer.php`)
+## Configuration (`config/log-viewer.php`)
 
 ```php
 return [
-    // Toggle Log Viewer on/off
     'enabled' => env('LOG_VIEWER_ENABLED', true),
-
-    // Route prefix (e.g., /log-viewer or /admin/logs)
+    'passkey' => env('LOG_VIEWER_PASSKEY', null),
     'route_prefix' => env('LOG_VIEWER_ROUTE_PREFIX', 'log-viewer'),
 
-    // Protecting the Log Viewer with Middleware
-    'middleware' => [
-        'web',
-        'auth', // Optional: add auth or custom gate middleware
+    // Email Digest Notifications (production only)
+    'email_notifications' => [
+        'enabled' => (bool) env('LOG_VIEWER_EMAIL_ENABLED', false),
+        'to' => env('LOG_VIEWER_EMAIL_TO', null),
+        'interval_minutes' => (int) env('LOG_VIEWER_EMAIL_INTERVAL', 30),
+        'levels' => ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY'],
     ],
 
-    // Path where log files are stored
     'storage_path' => storage_path('logs'),
-
-    // Log items per page
     'per_page' => 50,
-
-    // Default theme ('auto', 'dark', 'light')
     'theme' => 'auto',
 ];
 ```
 
-### Programmatic Usage & Facade
+### Environment Variables
+
+```env
+LOG_VIEWER_ENABLED=true
+LOG_VIEWER_PASSKEY=your-secret-passkey
+LOG_VIEWER_EMAIL_ENABLED=true
+LOG_VIEWER_EMAIL_TO=admin@example.com
+LOG_VIEWER_EMAIL_INTERVAL=30
+LOG_VIEWER_EMAIL_LEVELS=ERROR,CRITICAL,ALERT,EMERGENCY
+```
+
+---
+
+## Email Digest Notifications
+
+The email notification feature parses logs that occurred in the last specified time interval (default 30 minutes) and sends an HTML summary email to configured recipients.
+
+> **Note:** Email notifications only execute when `APP_ENV=production` (you can use `--force` to test locally).
+
+### Schedule Command
+
+To run periodic email checks, schedule the command in `routes/console.php`:
 
 ```php
-use SolverCircle\LogViewer\Facades\LogViewer;
+use Illuminate\Support\Facades\Schedule;
 
-// List all log files
-$files = LogViewer::getFiles();
-
-// Fetch parsed logs with filtering
-$logs = LogViewer::getLogs(fileName: 'laravel.log', level: 'ERROR', query: 'database');
-
-// Clear log file content
-LogViewer::clearLogFile('laravel.log');
-
-// Delete log file
-LogViewer::deleteLogFile('laravel-2026-09-26.log');
+Schedule::command('log-viewer:send-email-digest')->everyThirtyMinutes();
 ```
 
 ---
@@ -96,7 +95,7 @@ LogViewer::deleteLogFile('laravel-2026-09-26.log');
 Run tests via Pest:
 
 ```bash
-vendor/bin/pest packages/log-viewer/tests/Feature/LogViewerTest.php
+vendor/bin/pest packages/log-viewer/tests/Feature
 ```
 
 ---

@@ -128,6 +128,48 @@ class LogParserService
     }
 
     /**
+     * Get log entries created within the last X minutes matching specified log levels.
+     *
+     * @param string $filePath
+     * @param int $minutes
+     * @param array<int, string> $levels
+     * @return array<int, array>
+     */
+    public function getLogsInTimeframe(string $filePath, int $minutes = 30, array $levels = ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY']): array
+    {
+        if (! File::exists($filePath)) {
+            return [];
+        }
+
+        $content = File::get($filePath);
+        $rawBlocks = $this->splitLogBlocks($content);
+
+        $cutoffTimestamp = time() - ($minutes * 60);
+        $upperLevels = array_map('strtoupper', $levels);
+        $matchedEntries = [];
+        $lineNumber = 1;
+
+        foreach ($rawBlocks as $block) {
+            $entry = $this->parseBlock($block, $lineNumber++);
+
+            if (! $entry) {
+                continue;
+            }
+
+            if (! in_array(strtoupper($entry->level), $upperLevels, true)) {
+                continue;
+            }
+
+            $entryTime = strtotime($entry->timestamp);
+            if ($entryTime !== false && $entryTime >= $cutoffTimestamp) {
+                $matchedEntries[] = $entry->toArray();
+            }
+        }
+
+        return array_reverse($matchedEntries);
+    }
+
+    /**
      * Split continuous log file content into individual log entry text blocks.
      *
      * @return array<int, string>
