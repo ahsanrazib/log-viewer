@@ -26,7 +26,7 @@ A modern, interactive, real-time log viewer for Laravel applications. Easily ins
 You can install the package via composer:
 
 ```bash
-composer require solvercircle/log-viewer
+composer require ahsanrazib/log-viewer
 ```
 
 Publish the package configuration file and views (optional):

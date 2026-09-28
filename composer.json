@@ -1,5 +1,5 @@
 {
-    "name": "solvercircle/log-viewer",
+    "name": "ahsanrazib/log-viewer",
     "description": "A modern, interactive log viewer for Laravel applications",
     "type": "library",
     "keywords": [
@@ -15,7 +15,7 @@
     "authors": [
         {
             "name": "Ahsan Razib",
-            "email": "ahsan@solvercircle.com"
+            "email": "ahsan.razib8@gmail.com"
         }
     ],
     "require": {
