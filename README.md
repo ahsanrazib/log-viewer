@@ -76,7 +76,6 @@ LOG_VIEWER_EMAIL_LEVELS=ERROR,CRITICAL,ALERT,EMERGENCY
 
 The email notification feature parses logs that occurred in the last specified time interval (default 30 minutes) and sends an HTML summary email to configured recipients.
 
-> **Note:** Email notifications only execute when `APP_ENV=production` (you can use `--force` to test locally).
 
 ### Schedule Command
 
